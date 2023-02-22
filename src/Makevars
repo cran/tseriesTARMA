@@ -1,0 +1,19 @@
+PKG_LIBS = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+
+FT_OBJS = mrgrnk.o TARMA_MOD.o TARtest.o TARMAtest.o TARMAfit.o 
+
+all:
+	@$(MAKE) $(SHLIB)
+	@rm -f *.mod *.o
+
+$(SHLIB): $(FT_OBJS)
+
+TARtest.o: mrgrnk.o
+TARtest.o TARMAtest.o TARMAfit.o: TARMA_MOD.o
+
+
+cleanup:
+	@rm -f *.mod *.o
+	
+clean:
+	@rm -f *.mod *.o
