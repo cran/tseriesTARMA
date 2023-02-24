@@ -1,6 +1,15 @@
 
 # tseriesTARMA changelog
 
+## 0.3-2
+
+- Fixed missing dependency in MAKEVARS: the Fortran library TARMAurtest depends on the Fortran module TARMA_MOD
+
+- Fixed broken references in the `README.md` file. Now `README.Rmd` is used to generate it.
+
+- Fixed missing `PACKAGE` in several `.Fortran` calls.
+
+
 ## 0.3-1
 
 - First CRAN submission.

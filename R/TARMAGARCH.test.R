@@ -152,7 +152,7 @@ TARMAGARCH.test <- function(x,pa=.25, pb=.75, ar.ord=1, ma.ord=1, arch.ord=1, ga
   res    <- .Fortran('tarmagarch',as.double(x),as.double(epst),as.double(ht),
                      as.integer(n),as.integer(d), as.double(thd.range),as.integer(nr),as.integer(ar.ord),
                      as.double(ma), as.integer(ma.ord),as.double(aa), as.integer(arch.ord),
-                     as.double(bb), as.integer(garch.ord),test=test.v)
+                     as.double(bb), as.integer(garch.ord),test=test.v,PACKAGE='tseriesTARMA')
 
   test.v     <- res$test
   thd        <- thd.range[which.max(test.v)] + shift

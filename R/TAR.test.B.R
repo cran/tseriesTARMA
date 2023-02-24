@@ -113,7 +113,7 @@ TAR.test.B <- function(x, B=1000 ,pa=.25, pb=.75, ar.ord, d=1,
     storage.mode(dum) <- 'double'
     Tb   <- .Fortran('arvstar_hb',as.double(x),as.integer(n),as.integer(d),
                      as.integer(ar.ord),as.integer(a),as.integer(b),as.integer(neff),
-                     as.integer(B),test=double(2),testb = dum)$testb
+                     as.integer(B),test=double(2),testb = dum,PACKAGE='tseriesTARMA')$testb
   }else{
     x.b <- resi.b
     for(i in (ar.ord+1):np){

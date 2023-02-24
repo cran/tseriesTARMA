@@ -213,7 +213,7 @@ tarmals.f <- function(th){
     rss <- .Fortran('tarmals',as.double(x),as.integer(n), as.double(th),
     as.integer(k),as.integer(tar1.lags),as.integer(p1),as.integer(tar2.lags),as.integer(p2),
     as.integer(tma1.lags),as.integer(q1),as.integer(tma2.lags),as.integer(q2),
-    as.integer(Ir), L=double(1))$L
+    as.integer(Ir), L=double(1),PACKAGE='tseriesTARMA')$L
 #    as.integer(Ir), L=double(1),PACKAGE="tseriesTARMA")$L
         return(rss)
 }
@@ -245,7 +245,7 @@ tarmalsw.f <- function(th,wt){
     rss <- .Fortran('tarmalsw',as.double(x),as.integer(n), as.double(th),
     as.integer(tar1.lags),as.integer(p1),as.integer(tar2.lags),as.integer(p2),
     as.integer(tma1.lags),as.integer(q1),as.integer(tma2.lags),as.integer(q2),
-    as.integer(Ir), as.double(wt), as.integer(indg),as.integer(ng),L=double(1))$L
+    as.integer(Ir), as.double(wt), as.integer(indg),as.integer(ng),L=double(1),PACKAGE='tseriesTARMA')$L
 #    ,PACKAGE="tseriesTARMA")$L
         return(rss)
 }
@@ -399,8 +399,7 @@ DLeps.f <- function(th){
     res <- .Fortran('tarmadls',as.double(x),as.integer(n), as.double(th),
         as.integer(k),as.integer(tar1.lags),as.integer(p1),as.integer(tar2.lags),as.integer(p2),
         as.integer(tma1.lags),as.integer(q1),as.integer(tma2.lags),as.integer(q2),
-        as.integer(Ir), DL=double(ptot))$DL
-#        as.integer(Ir), DL=double(ptot),PACKAGE="tseriesTARMA")$DL
+        as.integer(Ir), DL=double(ptot),PACKAGE='tseriesTARMA')$DL
     return(res)
 }
 ## ************************************************
@@ -422,8 +421,7 @@ DLepsw.f <- function(th,wt){
     res <- .Fortran('tarmadlsw',as.double(x),as.integer(n), as.double(th),
         as.integer(tar1.lags),as.integer(p1),as.integer(tar2.lags),as.integer(p2),
         as.integer(tma1.lags),as.integer(q1),as.integer(tma2.lags),as.integer(q2),
-        as.integer(Ir), as.double(wt), as.integer(indg),as.integer(ng), DL=double(ptot))$DL
-#        PACKAGE="tseriesTARMA"
+        as.integer(Ir), as.double(wt), as.integer(indg),as.integer(ng), DL=double(ptot),PACKAGE='tseriesTARMA')$DL
     return(res)
 }
 ## ***************************************

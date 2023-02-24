@@ -9,7 +9,7 @@ all:
 $(SHLIB): $(FT_OBJS)
 
 TARtest.o: mrgrnk.o
-TARtest.o TARMAtest.o TARMAfit.o: TARMA_MOD.o
+TARtest.o TARMAtest.o TARMAurtest.o TARMAfit.o: TARMA_MOD.o
 
 
 cleanup:

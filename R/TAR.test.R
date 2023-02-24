@@ -76,7 +76,7 @@ TAR.test <- function(x,pa=.25, pb=.75, ar.ord, d=1){
     # SUBROUTINE ARvsTARh(x,n,d,p,a,b,neff,testv,xth,coef,s2,eps)
     res    <- .Fortran('arvstarh',as.double(x),as.integer(n),as.integer(d),
     as.integer(ar.ord),as.integer(a),as.integer(b),as.integer(neff),
-    test=test.v,xth=double(neff),coef=double(ar.ord+1),s2=double(1),eps=double(neff))
+    test=test.v,xth=double(neff),coef=double(ar.ord+1),s2=double(1),eps=double(neff),PACKAGE='tseriesTARMA')
     test.v     <- res$test
     xth        <- res$xth
     names(res$coef) <- c('Intercept',paste('ar',1:ar.ord,sep=''))

@@ -1,6 +1,6 @@
 Package: tseriesTARMA
 Title: Analysis of Nonlinear Time Series Through TARMA Models
-Version: 0.3-1
+Version: 0.3-2
 Authors@R: c(
    person('Simone', 'Giannerini', email = 'simone.giannerini@unibo.it', role = c('aut','cre'),
     comment = c(ORCID = '0000-0002-0710-668X')), 
@@ -21,8 +21,8 @@ Description: Routines for nonlinear time series analysis based on Threshold Auto
 Maintainer: Simone Giannerini <simone.giannerini@unibo.it>
 License: GPL (>= 2)
 RoxygenNote: 7.2.3
-Packaged: 2023-02-20 20:02:46 UTC; Simone
+Packaged: 2023-02-23 19:57:58 UTC; Simone
 Author: Simone Giannerini [aut, cre] (<https://orcid.org/0000-0002-0710-668X>),
   Greta Goracci [aut] (<https://orcid.org/0000-0001-5212-0539>)
 Repository: CRAN
-Date/Publication: 2023-02-22 14:30:02 UTC
+Date/Publication: 2023-02-24 08:40:06 UTC

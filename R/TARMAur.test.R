@@ -76,7 +76,7 @@ TARMAur.test <- function(x,pa=.25, pb=.75, thd.range, method='ML',...){
     
     # SUBROUTINE IMAvsTARMA(x,eps,n,trange,nr,s2,ma,testv)
     res    <- .Fortran('imavstarma',as.double(x),as.double(epst),as.integer(n),
-                       as.double(thd.range),as.integer(nr),as.double(s2),as.double(ma),test=double(nr))
+                       as.double(thd.range),as.integer(nr),as.double(s2),as.double(ma),test=double(nr),PACKAGE='tseriesTARMA')
     test.v           <- res$test
     thd              <- thd.range[which.max(test.v)]
     names(thd)       <- 'threshold'
