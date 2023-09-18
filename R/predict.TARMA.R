@@ -42,7 +42,6 @@ predict.TARMA <- function(object,x,n.ahead=0, n.sim=1e3, quant=c(0.05,0.95), pre
     k    <- max(object$arlag,object$tlag1,object$tlag2,object$mlag1,object$mlag2,d) # number of discarded observations
     eps  <- object$fit$residuals
     sdx  <- sqrt(object$fit$sigma2)
-#   if(length(eps)==n) eps <- window(eps,start=tsp(eps)[1]+k*deltat(eps)) # in TARMA.fit the length of the residuals is n
     if(n.ahead==0){
         fit1  <- x[-(1:k)]- eps
         res <- NULL

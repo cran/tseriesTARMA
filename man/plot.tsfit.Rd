@@ -67,5 +67,5 @@ plot.tsfit(x,fit=fit1);grid();
 \author{
 Simone Giannerini, \email{simone.giannerini@unibo.it}
 
-Greta Goracci, \email{greta.goracci@unibo.it}
+Greta Goracci, \email{greta.goracci@unibz.it}
 }

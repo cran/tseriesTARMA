@@ -112,8 +112,8 @@ TARMAGARCH.test <- function(x,pa=.25, pb=.75, ar.ord=1, ma.ord=1, arch.ord=1, ga
   DNAME  <- deparse(substitute(x))
   if(!is.ts(x)) x <- ts(x)
   n     <- length(x)
-  shift <- mean(x)
-  x     <- scale(x,scale=FALSE)
+#  shift <- mean(x)
+#  x     <- scale(x,scale=FALSE)
   # thd range **********************************
   if(missing(thd.range)){
     thd.v     <- sort(x[-1])
@@ -124,7 +124,7 @@ TARMAGARCH.test <- function(x,pa=.25, pb=.75, ar.ord=1, ma.ord=1, arch.ord=1, ga
   nr   <- length(thd.range)   # number of points for threshold estimation
   # ********************************************
 
-  fit    <- stats::arima(x, order=c(ar.ord,0,ma.ord),method=method,...) #fit ARMA(p,q)
+  fit    <- stats::arima(x, order=c(ar.ord,0,ma.ord),include.mean=TRUE,method=method,...) #fit ARMA(p,q)
   if(fit$code!=0) stop('ARMA fit does not converge')
   ma     <- -coef(fit)[-c(1:ar.ord,ar.ord+ma.ord+1)]  # notice the change in sign
   # if(any(Mod(polyroot(c(1, -ma))) < 1.05)){
@@ -155,7 +155,7 @@ TARMAGARCH.test <- function(x,pa=.25, pb=.75, ar.ord=1, ma.ord=1, arch.ord=1, ga
                      as.double(bb), as.integer(garch.ord),test=test.v,PACKAGE='tseriesTARMA')
 
   test.v     <- res$test
-  thd        <- thd.range[which.max(test.v)] + shift
+  thd        <- thd.range[which.max(test.v)]
   names(thd) <- 'threshold'
   names(d)   <- 'delay'
   test.stat  <- max(test.v)
@@ -165,12 +165,12 @@ TARMAGARCH.test <- function(x,pa=.25, pb=.75, ar.ord=1, ma.ord=1, arch.ord=1, ga
   Il         <- (xth<= thd)
   dfree      <- 1 + ar.ord + ma.ord
   if(ma.ord==0){
-    METHOD <- paste('supLM test AR-GARCH vs TAR-GARCH. Null model: AR(',ar.ord,')- GARCH(',arch.ord,',',garch.ord,')',sep='')
+    METHOD <- paste('supLM test AR-GARCH vs TAR-GARCH. Null model: AR(',ar.ord,')-GARCH(',arch.ord,',',garch.ord,')',sep='')
   }else{
-    METHOD <- paste('supLM test ARMA vs TARMA with GARCH innovations. Null model: ARMA(',ar.ord,',',ma.ord,')- GARCH(',arch.ord,',',garch.ord,')',sep='')
+    METHOD <- paste('supLM test ARMA vs TARMA with GARCH innovations. Null model: ARMA(',ar.ord,',',ma.ord,')-GARCH(',arch.ord,',',garch.ord,')',sep='')
   }
-  structure(list(statistic=test.stat, parameter=c(thd), test.v=test.v+shift,
-                 thd.range=thd.range+shift, fit.ARMA=fit, fit.GARCH=fit.g, sigma2=s2,
+  structure(list(statistic=test.stat, parameter=c(thd), test.v=test.v,
+                 thd.range=thd.range, fit.ARMA=fit, fit.GARCH=fit.g, sigma2=s2,
                   data.name=DNAME,prop=mean(Il), p.value=NULL,
                  method=METHOD,d=d,pa=pa, dfree=dfree),class=c('TARMAtest','htest'))
 }

@@ -15,26 +15,29 @@
 print.TARMA <-
     function (x, digits = max(3L, getOption("digits") - 3L), se = TRUE, ...){
     if(x$method=='MLE'){
-        i.int <- x$include.int
-        n.ma  <- length(x$mlag1)        # number of common MA+SMA parameters
-        n.ar  <- length(x$arlag)        # number of common AR parameters
-        n.tar1 <- length(x$tlag1)+i.int # number of TAR parameters (lower)
-        n.tar2 <- length(x$tlag2)+i.int # number of TAR parameters (upper)
-        n.tot  <- length(x$fit$coef)    # total number of parameters
-        coef.arma <- round(x$fit$coef[1:(n.ma+n.ar+(1-i.int))], digits = digits)
-        coef.l    <- round(x$phi1[c(i.int,x$tlag1+1)], digits=digits)
-        coef.u    <- round(x$phi2[c(i.int,x$tlag2+1)], digits=digits)
+        mask      <- x$fit$mask
+        i.int     <- x$include.int
+        n.ma      <- length(x$mlag1)        # number of common MA+SMA parameters
+        n.ar      <- length(x$arlag)        # number of common AR parameters
+        n.tar1    <- length(x$tlag1)+i.int # number of TAR parameters (lower)
+        n.tar2    <- length(x$tlag2)+i.int # number of TAR parameters (upper)
+        nptot     <- length(x$se)          # total number of parameters
+        coefm     <- round(x$fit$coef, digits = digits)    
+        coef.arma <- coefm[mask][1:(n.ma+n.ar+(1-i.int))]
+        coef.l    <- coefm[mask][((n.ma+n.ar+(1-i.int))+1):((n.ma+n.ar+(1-i.int))+n.tar1)]
+        coef.u    <- coefm[mask][((n.ma+n.ar+(1-i.int))+n.tar1+1):((n.ma+n.ar+(1-i.int))+n.tar1+n.tar2)]
         nxreg     <- length(x$delta)
-        nptot     <- length(x$fit$coef)
         if(nxreg){
-            coef.reg <- round(x$delta, digits=digits)
+            coef.reg <- x$delta
         }
         if(se){
-            ses.arma <- round(x$se[1:(n.ma+n.ar+(1-i.int))], digits = digits)
-            ses.l    <- round(x$se[(n.ma+n.ar+(1-i.int)+1):(n.ma+n.ar+(1-i.int)+n.tar1)], digits=digits)
-            ses.u    <- round(x$se[(n.ma+n.ar+(1-i.int)+n.tar1+1):(n.ma+n.ar+(1-i.int)+n.tar1+n.tar2)], digits=digits)
+            ses      <- rep_len(0, nptot)
+            ses[x$fit$mask] <- round(x$se, digits = digits)
+            ses.arma <- ses[mask][1:(n.ma+n.ar+(1-i.int))]
+            ses.l    <- ses[mask][(n.ma+n.ar+(1-i.int)+1):(n.ma+n.ar+(1-i.int)+n.tar1)]
+            ses.u    <- ses[mask][(n.ma+n.ar+(1-i.int)+n.tar1+1):(n.ma+n.ar+(1-i.int)+n.tar1+n.tar2)]
             if(nxreg){
-                ses.reg <- round(x$se[(n.ma+n.ar+(1-i.int)+n.tar1+n.tar2+1):nptot], digits=digits)
+                ses.reg <- ses[mask][(n.ma+n.ar+(1-i.int)+n.tar1+n.tar2+1):nptot]
             }
             coef.arma <- matrix(coef.arma, 1L, dimnames = list(NULL, names(coef.arma)))
             coef.arma <- rbind(coef.arma, s.e. = ses.arma)

@@ -87,13 +87,14 @@
 #'  \item \code{convergence} - Convergence code from the optimization routine.
 #'}
 #' @author Simone Giannerini, \email{simone.giannerini@@unibo.it}
-#' @author Greta Goracci, \email{greta.goracci@@unibo.it}
+#' @author Greta Goracci, \email{greta.goracci@@unibz.it}
 #' @references
 #' * \insertRef{Gia21}{tseriesTARMA}
 #' * \insertRef{Cha19}{tseriesTARMA}
 #' * \insertRef{Gor23b}{tseriesTARMA}
 #' * \insertRef{Fer12}{tseriesTARMA}
 #'
+#' @importFrom zoo is.zoo zoo index 
 #' @importFrom methods new
 #' @importFrom Rsolnp solnp
 #' @importFrom lbfgsb3c lbfgsb3c
@@ -167,8 +168,8 @@ method=c("L-BFGS-B","solnp","lbfgsb3c","robust"),
     m.lags   <- sort(unique(c(tma1.lags,tma2.lags)))
     if(any(t.lags<=0)||any(m.lags<=0)) stop('lags must be positive integers')
 
-    if(!is.ts(x)) x <- ts(x)
-
+    if(!any(is.ts(x)|is.zoo(x))){x <- ts(x)}
+    ix <- index(x)
     p1 <- n.tar1+1 # dimension of the TAR vector (1st regime)
     p2 <- n.tar2+1 # dimension of the TAR vector (2nd regime)
     q1 <- n.tma1   # dimension of the TMA vector (1st regime)
@@ -177,9 +178,7 @@ method=c("L-BFGS-B","solnp","lbfgsb3c","robust"),
     n.tmap <- q1+q2 # total number of TMA parameters
     ptot   <- n.tarp+n.tmap # total number of parameters
     th     <- rep(0,ptot)  # parameter vector
-#    max.p1 <- max(tar1.lags)
-#    max.p2 <- max(tar2.lags)
-    k      <- max(t.lags,m.lags,d,na.rm=TRUE)
+    k      <- max(t.lags,m.lags,d,na.rm=TRUE) # number of discarded observations
     neff   <- n-k # actual sample size
     xth    <- c(rep(0,d),x[1:(n-d)])  # threshold variable
     indg   <- (k+1):n                 # default, non robust set of indices used to compute the OLS target function and gradient
@@ -709,7 +708,8 @@ if(method=='L-BFGS-B'){
         sigmai  <- solve(forceSymmetric((t(deps)%*%deps))/(n-k))
         s2hat   <- rss/(n-k)
     }
-    eps     <- window(eps,start=tsp(eps)[1]+k*deltat(eps))
+#    eps     <- window(eps,start=tsp(eps)[1]+k*deltat(eps))
+    eps     <- as.ts(zoo(c(eps),order.by = ix[-(1:k)]))   
     Ir      <- Ir[-(1:k)]
     n1      <- sum(Ir)
     n2      <- sum(1-Ir)

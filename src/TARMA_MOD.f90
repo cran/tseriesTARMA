@@ -2,13 +2,14 @@
 !! Set of Fortran utility subroutines/functions companion to the
 !! tseriesTARMA package
 !! Simone Giannerini
-!! Last modified Dec 2022
+!! Last modified Sep 2023
 ! *****************************************************************************
 
 MODULE TARMA_MOD
    use ISO_C_BINDING
    USE ISO_Fortran_env
    implicit none
+
     REAL(C_DOUBLE),PARAMETER :: M_PI         = 3.141592653589793238462643383280
     REAL(C_DOUBLE),PARAMETER :: M_1_SQRT_2PI = 0.398942280401432677939946059934 ! 1/(sqrt(2*pi))
 
@@ -91,19 +92,16 @@ SUBROUTINE EMBED(X,lags,OUT)
     enddo
 END SUBROUTINE EMBED
 ! *****************************************************************************
+FUNCTION BOOT(N,size)
+! gives a s sample with replacement of length size from the first N integers
+    INTEGER,INTENT(IN) :: N,size
+    INTEGER :: BOOT(size)
+    REAL(C_DOUBLE) :: u(size)
+    CALL randunif(u,size)
+    BOOT = int(u*N)+1   ! random number between fra 1 e N
+END FUNCTION BOOT
 
-    FUNCTION BOOT(N,size)
-        ! GIVES A RESAMPLE WITH REPLACEMENT OF LENGTH size OF THE FIRST N INTEGERS
-        INTEGER,INTENT(IN) :: N,size
-        INTEGER :: BOOT(size)
-        REAL(C_DOUBLE) :: u(size)
- !       CALL init_random_seed()
-        CALL RANDOM_NUMBER(u)
-        BOOT = int(u*N)+1   ! numero casuale compreso fra 1 e N
-    END FUNCTION BOOT
-
-!! *************************************************************************************************
-
+!! *****************************************************************************
 FUNCTION ROW_LOGI(X)
     IMPLICIT NONE
     LOGICAL,INTENT(IN):: X(:,:)

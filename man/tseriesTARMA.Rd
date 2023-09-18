@@ -3,6 +3,7 @@
 \docType{package}
 \name{tseriesTARMA}
 \alias{tseriesTARMA}
+\alias{tseriesTARMA-package}
 \title{tseriesTARMA: Analysis of Nonlinear Time Series through Threshold Autoregressive Moving Average Models (TARMA) models}
 \description{
 It provides advanced functions for:
@@ -36,3 +37,4 @@ Simone Giannerini, \email{simone.giannerini@unibo.it}
 
 Greta Goracci, \email{greta.goracci@unibz.it}
 }
+\keyword{internal}

@@ -1,6 +1,27 @@
 
 # tseriesTARMA changelog
 
+## 0.3-4
+
+- Removed a leftover call to the `Fortran` intrinsic `RANDOM_NUMBER` function.
+
+- Fixed the docs to cope with the roxygen2 issue https://github.com/r-lib/roxygen2/issues/1491
+
+
+## 0.3-3
+
+- Now the residuals in `TARMA.fit` inherit the time attributes of the original series.
+
+- Fixed `print.TARMAtest` when `fixed` is used to fix parameter values in `TARMA.fit2`.
+
+- In `TARMAGARCH.test`: set `include.mean=TRUE` in the ARMA fit and removed centering.
+
+- Minor fixes to the documentation of `TARMAGARCH.test`.
+
+- Updated the e-mail address of Greta Goracci in the docs.
+
+- Updated the Statistica Sinica 2023 reference.
+
 ## 0.3-2
 
 - Fixed missing dependency in MAKEVARS: the Fortran library TARMAurtest depends on the Fortran module TARMA_MOD

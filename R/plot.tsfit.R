@@ -15,7 +15,7 @@
 #' @return
 #'   No return value, called for side effects
 #' @author Simone Giannerini, \email{simone.giannerini@@unibo.it}
-#' @author Greta Goracci, \email{greta.goracci@@unibo.it}
+#' @author Greta Goracci, \email{greta.goracci@@unibz.it}
 #' @importFrom stats ts.plot predict
 #' @rawNamespace export(plot.tsfit)
 #' @export

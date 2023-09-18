@@ -25,5 +25,7 @@
 #' @useDynLib tseriesTARMA
 #' @importFrom Rdpack reprompt
 #' @import mathjaxr
+#' @keywords internal
+"_PACKAGE"
 NULL
 #> NULL

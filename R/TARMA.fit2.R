@@ -69,7 +69,7 @@
 #'  \item \code{call}   - The matched call.
 #'}
 #' @author Simone Giannerini, \email{simone.giannerini@@unibo.it}
-#' @author Greta Goracci, \email{greta.goracci@@unibo.it}
+#' @author Greta Goracci, \email{greta.goracci@@unibz.it}
 #' @references
 #' * \insertRef{Gia21}{tseriesTARMA}
 #' * \insertRef{Cha19}{tseriesTARMA}

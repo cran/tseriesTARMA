@@ -192,5 +192,5 @@ models with common MA part. \code{\link{print.TARMA}} for print methods for \cod
 \author{
 Simone Giannerini, \email{simone.giannerini@unibo.it}
 
-Greta Goracci, \email{greta.goracci@unibo.it}
+Greta Goracci, \email{greta.goracci@unibz.it}
 }

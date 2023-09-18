@@ -34,17 +34,18 @@ install.packages("tseriesTARMA")
 ## Authors
 
 - [Simone Giannerini, University of
-  Bologna](https://www.unibo.it/sitoweb/simone.giannerini/en)
+  Bologna](https://www.simonegiannerini.net)
 - [Greta Goracci, Free University of
   Bolzano/Bozen](https://www.unibz.it/it/faculties/economics-management/academic-staff/person/46136-greta-goracci)
 
 ## References
 
 - Giannerini, Goracci, and Rahbek (2023)
+- Goracci, Ferrari, et al. (2023)
 - Giannerini, Goracci, and Rahbek (2022)
 - Giannerini and Goracci (2021)
 - Goracci et al. (2021)
-- Goracci et al. (2023)
+- Goracci, Giannerini, et al. (2023)
 - K.-S. Chan and Goracci (2019)
 - K.-S. Chan et al. (2024)
 
@@ -84,8 +85,17 @@ Bootstrap Testing in the Threshold Framework.” arXiv.
 <div id="ref-Gia23" class="csl-entry">
 
 ———. 2023. “The Validity of Bootstrap Testing in the Threshold
-Framework.” *Journal of Econometrics*, forthcoming.
+Framework.” *Journal of Econometrics*, no. 105379: in press.
 <https://doi.org/10.1016/j.jeconom.2023.01.004>.
+
+</div>
+
+<div id="ref-Gor23b" class="csl-entry">
+
+Goracci, G., D. Ferrari, S. Giannerini, and F. Ravazzolo. 2023. “Robust
+Estimation for Threshold Autoregressive Moving-Average Models.” Free
+University of Bolzano, University of Bologna.
+<https://doi.org/10.48550/ARXIV.2211.08205>.
 
 </div>
 
@@ -101,7 +111,7 @@ University of Bolzano, University of Iowa, London School of Economics.
 <div id="ref-Gor23" class="csl-entry">
 
 ———. 2023. “Testing for Threshold Effects in the TARMA Framework.”
-*Statistica Sinica* 33 (3): to appear.
+*Statistica Sinica* 33 (3): 1879–1901.
 <https://doi.org/10.5705/ss.202021.0120>.
 
 </div>
