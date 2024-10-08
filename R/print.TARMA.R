@@ -17,8 +17,8 @@ print.TARMA <-
     if(x$method=='MLE'){
         mask      <- x$fit$mask
         i.int     <- x$include.int
-        n.ma      <- length(x$mlag1)        # number of common MA+SMA parameters
-        n.ar      <- length(x$arlag)        # number of common AR parameters
+        n.ma      <- length(x$mlag1)       # number of common MA+SMA parameters
+        n.ar      <- length(x$arlag)       # number of common AR parameters
         n.tar1    <- length(x$tlag1)+i.int # number of TAR parameters (lower)
         n.tar2    <- length(x$tlag2)+i.int # number of TAR parameters (upper)
         nptot     <- length(x$se)          # total number of parameters
@@ -60,7 +60,7 @@ print.TARMA <-
         if(nxreg){
         cat('-----------------------------------------------------------------\n')
         cat(" - Covariates:\n")
-        print.default(coef.reg, print.gap = 2)
+        print.default(coef.reg, print.gap = 2, digits = digits)
         }
         cat('-----------------------------------------------------------------\n')
         cat(" - Lower regime: ")
@@ -77,11 +77,12 @@ print.TARMA <-
         np2 <- length(x$tlag2)+1
         nq1 <- length(x$mlag1)
         nq2 <- length(x$mlag2)
+        dum <- ifelse(x$method=='robust','Robust M','Least Squares')
         cat('-----------------------------------------------------------------\n')
-        cat("--- Least Squares fit of the TARMA model:\n")
+        cat('--- ',dum,'fit of the TARMA model:\n')
         cat('-----------------------------------------------------------------\n')
-        cat("\nCall:", deparse(x$call, width.cutoff = 75L), "", sep = "\n")
-        cat("Method: ", x$method, "\n", sep = "")
+        cat('\nCall:', deparse(x$call, width.cutoff = 75L), '', sep = "\n")
+        cat('Method: ', x$method, '  - Innovation density: ', x$innov, '\n', sep = '')
         if (length(x$fit$coef)){
             coef.l <- round(c(x$fit$coef[1:np1],x$fit$coef[(np1+np2+1):(np1+np2+nq1)]), digits = digits)
             coef.u <- round(c(x$fit$coef[(np1+1):(np1+np2)],x$fit$coef[(np1+np2+nq1+1):(np1+np2+nq1+nq2)]), digits = digits)
@@ -116,10 +117,13 @@ print.TARMA <-
         cat('-----------------------------------------------------------------\n')
     cat("\nd = ",x$d,";  threshold = ", format(round(x$thd, 2L)),
         "; ", alphadum, "\n", sep = "")
-        cat('-----------------------------------------------------------------\n')
+    cat('-----------------------------------------------------------------\n\n')
     cat("sigma^2 estimated as ", format(x$fit$sigma2, digits = digits),
-        "; RSS = ", format(round(x$rss, 2L)),
-        "; ", aicdum, "\n", sep = "")
+        "; RSS = ", format(round(x$rss, 2L)),"; ", aicdum, "\n", sep = "")
+    cat('-----------------------------------------------------------------\n')
+    if(!is.null(x$innovpar)){
+      cat("Innovations parameter estimated as", format(x$innovpar, digits = digits),'\n\n')
+    }
     invisible(x)
 }
 

@@ -41,7 +41,7 @@
 #'}
 #' @importFrom stats coef residuals
 #' @export
-#' @author Simone Giannerini, \email{simone.giannerini@@unibo.it}
+#' @author Simone Giannerini, \email{simone.giannerini@@uniud.it}
 #' @author Greta Goracci, \email{greta.goracci@@unibz.it}
 #' @references
 #' * \insertRef{Gia22}{tseriesTARMA}

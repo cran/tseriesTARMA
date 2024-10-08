@@ -1,6 +1,6 @@
 #'  AR versus TARMA supLM robust test for nonlinearity
 #'
-#'  Implements a heteroskedasticity robust supremum Lagrange Multiplier test for a AR specification versus
+#'  Heteroskedasticity robust supremum Lagrange Multiplier test for a AR specification versus
 #'  a TAR specification. Includes the classic (non robust) AR versus TAR test.
 #'
 #' @param x         A univariate time series.
@@ -36,16 +36,15 @@
 #'}
 #' @importFrom stats coef residuals as.ts
 #' @export
-#' @author Simone Giannerini, \email{simone.giannerini@@unibo.it}
+#' @author Simone Giannerini, \email{simone.giannerini@@uniud.it}
 #' @author Greta Goracci, \email{greta.goracci@@unibz.it}
 #' @references
 #' * \insertRef{Gor23}{tseriesTARMA}
 #' * \insertRef{And03}{tseriesTARMA}
 #'
 #' @seealso \code{\link{TAR.test.B}} for the bootstrap version of the test. 
-#' \code{\link{TARMA.test}} for the ARMA vs TARMA asymptotic version of the test, which includes also the AR vs TAR test, with different defaults.
-#' \code{\link{TARMAGARCH.test}} for the robust version of the ARMA vs TARMA test with respect to 
-#' GARCH innovations. 
+#' \code{\link{TARMA.test}} for the (robust) ARMA vs TARMA asymptotic version of the test, which includes also the AR vs TAR test, with different defaults.
+#' \code{\link{TARMAGARCH.test}} for the robust version of the ARMA vs TARMA test that assumes GARCH innovations. 
 #' \code{\link{TARMA.sim}} to simulate from a TARMA process. 
 #'
 #' @examples
@@ -68,8 +67,8 @@ TAR.test <- function(x,pa=.25, pb=.75, ar.ord, d=1){
     n      <- length(x)
     k      <- max(ar.ord,d)
     neff   <- n-k
-    a      <- ceiling((neff-1)*pa)
-    b      <- floor((neff-1)*pb)
+    a      <- ceiling(neff*pa)
+    b      <- floor(neff*pb)
     nr     <- b-a+1
     test.v <- matrix(0,nr,2)
     storage.mode(test.v) <- 'double'
@@ -82,17 +81,22 @@ TAR.test <- function(x,pa=.25, pb=.75, ar.ord, d=1){
     names(res$coef) <- c('Intercept',paste('ar',1:ar.ord,sep=''))
     fit        <- list(coefficients=res$coef, sigma2=res$s2,residuals=res$eps)
     thd.range  <- sort(xth)[a:b]
-    thd        <- thd.range[which.max(test.v[,1])]
-    names(thd) <- 'threshold'
+    thd        <- rep(NA,2)
+    names(thd) <- c('threshold supLM','threshold supLMh')
+    thd[1]     <- thd.range[which.max(test.v[,1])]
+    thd[2]     <- thd.range[which.max(test.v[,2])]
+    prop       <- thd
+    prop[1]    <- mean(xth<= thd[1])
+    prop[2]    <- mean(xth<= thd[2])
+  
     names(d)   <- 'delay'
     test.stat  <- apply(test.v,FUN=max,MARGIN=2)
-    names(test.stat) <- c('supLM','supLMh')
-    colnames(test.v) <- c('supLM','supLMh')
-    Il         <- (xth<= thd)
+    names(test.stat) <- colnames(test.v) <- c('supLM','supLMh')
+
     dfree <- 1 + ar.ord
      METHOD <- paste('supLM test AR vs TAR. Null model: AR(',ar.ord,')',sep='')
     structure(list(test.v=test.v,thd.range=thd.range, fit=fit, sigma2=res$s2,
-     parameter=c(thd), data.name=DNAME,prop=mean(Il), statistic=test.stat, p.value=NULL,
+     parameter=c(thd), data.name=DNAME,prop=prop, statistic=test.stat, p.value=NULL,
      method=METHOD,d=d,pa=pa, dfree=dfree),class=c('TARMAtest','htest'))
 }
 

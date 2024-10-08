@@ -1,28 +1,29 @@
 #'  ARMA GARCH versus TARMA GARCH supLM test for nonlinearity
 #'
 #'  Implements a supremum Lagrange Multiplier test for a ARMA-GARCH specification versus
-#'  a TARMA-GARCH specification. Both the AR and MA parameters are tested
+#'  a TARMA-GARCH specification. Both the AR and MA parameters are tested. Also includes the ARCH case.
 #'
 #' @param x         A univariate time series.
 #' @param pa        Real number in \code{[0,1]}. Sets the lower limit for the threshold search to the \code{100*pa}-th sample percentile.
 #'                  The default is \code{0.25}
 #' @param pb        Real number in \code{[0,1]}. Sets the upper limit for the threshold search to the \code{100*pb}-th sample percentile.
 #'                  The default is \code{0.75}
-#' @param ar.ord    Order of the AR part.
-#' @param ma.ord    Order of the MA part.
-#' @param arch.ord  Order of the ARCH part.
-#' @param garch.ord Order of the GARCH part.
+#' @param ar.ord    Order of the AR part.  It must be a positive integer
+#' @param ma.ord    Order of the MA part.  It must be a positive integer
+#' @param arch.ord  Order of the ARCH part. It must be a positive integer
+#' @param garch.ord Order of the GARCH part.  It must be a non negative integer.
 #' @param d         Delay parameter. Defaults to \code{1}.
 #' @param thd.range Vector of optional user defined threshold range. If missing then \code{pa} and \code{pb} are used.
-#' @param method    Fitting method to be passed to \code{arima}.
-#' @param \dots     Additional arguments to be passed to \code{arima}.
+#' @param \dots     Additional arguments to be passed to \code{ugarchfit}.
 #'
 #' @details
 #' Implements an asymptotic supremum Lagrange Multiplier test to test an ARMA-GARCH specification versus
 #' a TARMA-GARCH specification. In other words, the test is robust with respect to heteroskedasticity.
 #' Both the AR parameters and the MA parameters are tested. This is an asymptotic test and the value of
-#' the test statistic has to be compared with the critical values tabulated in \insertCite{Ang22}{tseriesTARMA}
-#'  or \insertCite{And03}{tseriesTARMA}.
+#' the test statistic has to be compared with the critical values reported in the output and taken from 
+#'  \insertCite{And03}{tseriesTARMA}. It includes the ARCH case if \code{garch.ord=0}.  
+#'  The null ARMA-GARCH model is estimated in one step with the function \code{ugarchfit}
+#'  from the package \code{rugarch}. The estimated AR and MA polynomials are checked for stationarity and invertibility.
 #'
 #' @return
 #'   A list of class \code{htest} with components:
@@ -31,8 +32,7 @@
 #'  \item{\code{parameter}}{A named vector: \code{threshold} is the value that maximises the Lagrange Multiplier values.}
 #'  \item{\code{test.v}}{Vector of values of the LM statistic for each threshold given in \code{thd.range}.}
 #'  \item{\code{thd.range}}{Range of values of the threshold.}
-#'  \item{\code{fit.ARMA}}{The null model: ARMA fit over \code{x}.}
-#'  \item{\code{fit.GARCH}}{The null model: GARCH fit over the residuals of the ARMA fit.}
+#'  \item{\code{fit}}{The null model: ARMA-GARCH fit using \code{rugarch}.}
 #'  \item{\code{sigma2}}{Estimated innovation variance from the ARMA fit.}
 #'  \item{\code{data.name}}{A character string giving the name of the data.}
 #'  \item{\code{prop}}{Proportion of values of the series that fall in the lower regime.}
@@ -42,13 +42,12 @@
 #'  \item{\code{pa}}{Lower threshold quantile.}
 #'  \item{\code{dfree}}{Effective degrees of freedom. It is the number of tested parameters.}
 #'}
-#' @importFrom stats coef residuals
-#' @importFrom rugarch ugarchspec ugarchfit
+#' @importFrom rugarch ugarchspec ugarchfit sigma
 #' @export
-#' @author Simone Giannerini, \email{simone.giannerini@@unibo.it}
+#' @author Simone Giannerini, \email{simone.giannerini@@uniud.it}
 #' @author Greta Goracci, \email{greta.goracci@@unibz.it}
 #' @references
-#' * \insertRef{Ang22}{tseriesTARMA}
+#' * \insertRef{Ang23}{tseriesTARMA}
 #' * \insertRef{Gor21}{tseriesTARMA}
 #' * \insertRef{And03}{tseriesTARMA}
 #'
@@ -61,7 +60,7 @@
 #' n.start = 500, start.innov = rand.gen(n.start, ...),...){
 #'
 #'   #  Simulates a ARMA(1,1)-GARCH(1,1) process
-#'   #  with parameeters ph, th, a, b, a0.
+#'   #  with parameters ph, th, a, b, a0.
 #'   #         x[t] <- ph*x[t-1] + th*eps[t-1] + eps[t]
 #'   #       eps[t] <- e[t]*sqrt(v[t])
 #'   #         v[t] <- a0 + a*eps[t-1]^2 + b*v[t-1];
@@ -108,61 +107,69 @@
 #'
 ## ***************************************************************************
 
-TARMAGARCH.test <- function(x,pa=.25, pb=.75, ar.ord=1, ma.ord=1, arch.ord=1, garch.ord=1, d=1, thd.range,  method='CSS', ...){
+TARMAGARCH.test <- function(x,pa=.25, pb=.75, ar.ord=1, ma.ord=1, arch.ord=1, garch.ord=1, d=1, thd.range, ...){
+
+  if(ma.ord<=0) stop('MA order must be positive')
+  if(ar.ord<=0) stop('AR order must be positive')
+  if(arch.ord<=0) stop('ARCH order must be positive')
+  if(garch.ord<0) stop('GARCH order must be non negative')
+  
   DNAME  <- deparse(substitute(x))
   if(!is.ts(x)) x <- ts(x)
   n     <- length(x)
-#  shift <- mean(x)
-#  x     <- scale(x,scale=FALSE)
+  
   # thd range **********************************
   if(missing(thd.range)){
-    thd.v     <- sort(x[-1])
-    a         <- ceiling((n-1)*pa)
-    b         <- floor((n-1)*pb)
-    thd.range <- thd.v[a:b]
+    a          <- ceiling((n-d)*pa)
+    b          <- floor((n-d)*pb)
+    x          <- as.ts(x) # this makes ts.intersect work with zoo objects
+    xreg       <- ts.intersect(x,lag(x,-d))
+    xth        <- xreg[,2]
+    thd.range  <- sort(xth)[a:b]
   }
-  nr   <- length(thd.range)   # number of points for threshold estimation
   # ********************************************
-
-  fit    <- stats::arima(x, order=c(ar.ord,0,ma.ord),include.mean=TRUE,method=method,...) #fit ARMA(p,q)
-  if(fit$code!=0) stop('ARMA fit does not converge')
-  ma     <- -coef(fit)[-c(1:ar.ord,ar.ord+ma.ord+1)]  # notice the change in sign
-  # if(any(Mod(polyroot(c(1, -ma))) < 1.05)){
-  #   fit    <- stats::arima(x, order=c(ar.ord,0,ma.ord), method='CSS') #fit ARMA(p,q) with CSS
-  #   if(fit$code!=0) stop('ARMA fit does not converge')
-  #   ma     <- -coef(fit)[-c(1:ar.ord,ar.ord+ma.ord+1)]  # notice the change in sign
-  #   if(any(Mod(polyroot(c(1, -ma))) < 1.04)) stop('non invertible MA part')
-  # }
-
-  # elements from ARMA fit that we need*********************************************
-  epst     <- residuals(fit)                            # taken as estimates of eps_{t}
-  s2       <- fit$sigma2                                # taken as estimate of sigma^2
-  # *********************************************************************************
+  nr   <- length(thd.range)   # number of points for threshold estimation
+  
   # rugarch
   spec1 <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(arch.ord, garch.ord)),
-                      mean.model = list(armaOrder=c(0,0),include.mean = FALSE))
-  fit.g <- ugarchfit(spec=spec1, data = epst)
-  ht    <- ts(fit.g@fit$var) # conditional variance
-  aa    <- fit.g@fit$coef[2:(arch.ord+1)] # ARCH pars (without a0)
-  bb    <- fit.g@fit$coef[(arch.ord+2):(arch.ord+garch.ord+1)] # GARCH pars
+                      mean.model = list(armaOrder=c(ar.ord,ma.ord),include.mean = TRUE))
+  fit.g <- ugarchfit(spec=spec1, data = x, ...)
+  ht    <- sigma(fit.g)^2 # conditional variance
+  epst  <- rugarch::residuals(fit.g) # sqrt(ht)*zt
+  s2    <- c(var(epst/ht))
+  pars  <- rugarch::coef(fit.g)
+  ar.p  <- pars[2:(ar.ord+1)]
+  if(!all(Mod(polyroot(c(1, -ar.p))) > 1)) stop('non stationary AR part') 
+  ma.p  <- -pars[(ar.ord+2):(ar.ord+ma.ord+1)]  # notice the change in sign
+  if(!all(Mod(polyroot(c(1, -ma.p))) > 1)) stop('non invertible MA part')
+  aa    <- pars[(ar.ord+ma.ord+3):(ar.ord+ma.ord+arch.ord+2)] # ARCH pars (without a0)
+  if(garch.ord>0){
+    bb    <- pars[(ar.ord+ma.ord+arch.ord+3):(ar.ord+ma.ord+arch.ord+garch.ord+2)] # GARCH par
+    gyes  <- 1L
+    g.ord <- garch.ord
+  }else{
+    bb    <- 0L
+    gyes  <- 0L
+    g.ord <- 1L
+  }
   if(fit.g@fit$convergence != 0){warning('GARCH fit did not reach convergence.')}
+  
+  
   ## call to Fortran code
   test.v <- double(nr)
   #SUBROUTINE TARMAGARCH(x,eps,h,n,d,trange,nr,p,ma,q,aa,m,bb,s,testv)
   res    <- .Fortran('tarmagarch',as.double(x),as.double(epst),as.double(ht),
                      as.integer(n),as.integer(d), as.double(thd.range),as.integer(nr),as.integer(ar.ord),
-                     as.double(ma), as.integer(ma.ord),as.double(aa), as.integer(arch.ord),
-                     as.double(bb), as.integer(garch.ord),test=test.v,PACKAGE='tseriesTARMA')
-
+                     as.double(ma.p), as.integer(ma.ord),as.double(aa), as.integer(arch.ord),
+                     as.double(bb), as.integer(g.ord),as.integer(gyes),test=test.v,PACKAGE='tseriesTARMA')
+  
   test.v     <- res$test
   thd        <- thd.range[which.max(test.v)]
   names(thd) <- 'threshold'
   names(d)   <- 'delay'
   test.stat  <- max(test.v)
   names(test.stat) <- 'supLM'
-  xreg       <- ts.intersect(x,lag(x,-d))
-  xth        <- xreg[,2]
-  Il         <- (xth<= thd)
+  prop       <- mean(xth<= thd)
   dfree      <- 1 + ar.ord + ma.ord
   if(ma.ord==0){
     METHOD <- paste('supLM test AR-GARCH vs TAR-GARCH. Null model: AR(',ar.ord,')-GARCH(',arch.ord,',',garch.ord,')',sep='')
@@ -170,8 +177,9 @@ TARMAGARCH.test <- function(x,pa=.25, pb=.75, ar.ord=1, ma.ord=1, arch.ord=1, ga
     METHOD <- paste('supLM test ARMA vs TARMA with GARCH innovations. Null model: ARMA(',ar.ord,',',ma.ord,')-GARCH(',arch.ord,',',garch.ord,')',sep='')
   }
   structure(list(statistic=test.stat, parameter=c(thd), test.v=test.v,
-                 thd.range=thd.range, fit.ARMA=fit, fit.GARCH=fit.g, sigma2=s2,
-                  data.name=DNAME,prop=mean(Il), p.value=NULL,
+                 thd.range=thd.range, fit=fit.g,sigma2= s2,
+                 data.name=DNAME,prop=prop, p.value=NULL,
                  method=METHOD,d=d,pa=pa, dfree=dfree),class=c('TARMAtest','htest'))
 }
-## ****************************************************************************
+
+## ****************************************************************************## ****************************************************************************

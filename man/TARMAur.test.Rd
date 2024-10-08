@@ -70,7 +70,7 @@ TARMAur.test(x2)
 \code{\link{print.TARMAtest}} for the print method.
 }
 \author{
-Simone Giannerini, \email{simone.giannerini@unibo.it}
+Simone Giannerini, \email{simone.giannerini@uniud.it}
 
 Greta Goracci, \email{greta.goracci@unibz.it}
 }

@@ -58,7 +58,7 @@ xp1
 \code{\link{TARMA.fit}} and \code{\link{TARMA.fit2}} for TARMA modelling. \code{\link{plot.tsfit}} for plotting TARMA fits and forecasts.
 }
 \author{
-Simone Giannerini, \email{simone.giannerini@unibo.it}
+Simone Giannerini, \email{simone.giannerini@uniud.it}
 
-Greta Goracci, \email{greta.goracci@unibo.it}
+Greta Goracci, \email{greta.goracci@unibz.it}
 }

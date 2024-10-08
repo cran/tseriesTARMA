@@ -11,7 +11,7 @@
 #'                  The default is \code{0.75}
 #' @param thd.range Vector of optional user defined threshold range. If missing then \code{pa} and \code{pb} are used.
 #' @param method    Fitting method to be passed to \code{arima}.
-#' @param btype     Bootstrap type, can be one of \code{'iid','wb.h','wb.r','wb.n'}, see Details.
+#' @param btype     Bootstrap type, can be one of \code{'iid','wb.r','wb.n'}, see Details.
 #' @param \dots     Additional arguments to be passed to \code{arima}.
 #'
 #' @details
@@ -42,7 +42,7 @@
 #'}
 #' @importFrom stats coef residuals
 #' @export
-#' @author Simone Giannerini, \email{simone.giannerini@@unibo.it}
+#' @author Simone Giannerini, \email{simone.giannerini@@uniud.it}
 #' @author Greta Goracci, \email{greta.goracci@@unibz.it}
 #' @references
 #' * \insertRef{Cha24}{tseriesTARMA}

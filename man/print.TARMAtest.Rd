@@ -27,7 +27,7 @@ Note that the bootstrap version of the tests also print the bootstrap p-value.
 \code{\link{print.htest}}
 }
 \author{
-Simone Giannerini, \email{simone.giannerini@unibo.it}
+Simone Giannerini, \email{simone.giannerini@uniud.it}
 
 Greta Goracci, \email{greta.goracci@unibz.it}
 }

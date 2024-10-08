@@ -48,7 +48,7 @@
 #' ## a TARMA(1,2,1,1) model
 #' x <- TARMA.sim(n=100,phi1=c(0.5,-0.5,0),phi2=c(0,0.5,0.3),theta1=-0.5,theta2=0.5,d=1,thd=0.2)
 #'
-#' @author Simone Giannerini, \email{simone.giannerini@@unibo.it}
+#' @author Simone Giannerini, \email{simone.giannerini@@uniud.it}
 #' @author Greta Goracci, \email{greta.goracci@@unibz.it}
 #' @references
 #' * \insertRef{Gia21}{tseriesTARMA}

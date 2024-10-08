@@ -35,7 +35,7 @@
 #'}
 #' @importFrom stats coef residuals
 #' @export
-#' @author Simone Giannerini, \email{simone.giannerini@@unibo.it}
+#' @author Simone Giannerini, \email{simone.giannerini@@uniud.it}
 #' @author Greta Goracci, \email{greta.goracci@@unibz.it}
 #' @references
 #' * \insertRef{Cha24}{tseriesTARMA}
@@ -63,7 +63,7 @@ TARMAur.test <- function(x,pa=.25, pb=.75, thd.range, method='ML',...){
     if(!is.ts(x)) x <- ts(x)
     n      <- length(x)
     fit    <- stats::arima(x, order=c(0,1,1), method=method,xreg=data.frame(intercept=1:n))
-    thd.v  <- sort(x[-1])
+    thd.v  <- sort(x)
     a      <- ceiling((n-1)*pa)
     b      <- floor((n-1)*pb)
     ma     <- -coef(fit)['ma1']      # notice the change in sign

@@ -9,13 +9,14 @@
 SUBROUTINE tarmaLS(x,nx,th,k,tlag1,p1,tlag2,p2,mlag1,q1,mlag2,q2,Ir,L)
 !! Least Squares objective function for a TARMA model
     USE ISO_Fortran_env
+    use ISO_C_BINDING
     IMPLICIT NONE
     INTEGER,intent(in):: nx,k,p1,p2,q1,q2,Ir(nx),tlag1(p1-1),tlag2(p2-1),&
     mlag1(q1),mlag2(q2)
-    REAL(KIND=REAL64),intent(in) :: x(nx),th(p1+p2+q1+q2)
-    REAL(KIND=REAL64),intent(out):: L
+    REAL(C_DOUBLE),intent(in) :: x(nx),th(p1+p2+q1+q2)
+    REAL(C_DOUBLE),intent(out):: L
     integer :: i
-    REAL(KIND=REAL64) :: eps(nx),h,phi1(p1),phi2(p2),th1(q1),th2(q2)
+    REAL(C_DOUBLE) :: eps(nx),h,phi1(p1),phi2(p2),th1(q1),th2(q2)
     eps  = 0
     L    = 0
     h    = 1
@@ -36,10 +37,10 @@ SUBROUTINE tarmaLS(x,nx,th,k,tlag1,p1,tlag2,p2,mlag1,q1,mlag2,q2,Ir,L)
 !    IMPLICIT NONE
 !    INTEGER,intent(in):: nx,k,p1,p2,q1,q2,Ir(nx),tlag1(p1-1),tlag2(p2-1),&
 !    mlag1(q1),mlag2(q2)
-!    REAL(KIND=REAL64),intent(in) :: x(nx),th(p1+p2+q1+q2),alpha
-!    REAL(KIND=REAL64),intent(out):: L
+!    REAL(C_DOUBLE),intent(in) :: x(nx),th(p1+p2+q1+q2),alpha
+!    REAL(C_DOUBLE),intent(out):: L
 !    integer :: i
-!    REAL(KIND=REAL64) :: eps(nx),h,phi1(p1),phi2(p2),th1(q1),th2(q2)
+!    REAL(C_DOUBLE) :: eps(nx),h,phi1(p1),phi2(p2),th1(q1),th2(q2)
 !    eps  = 0
 !    L    = 0
 !    h    = 1
@@ -57,13 +58,14 @@ SUBROUTINE tarmaLS(x,nx,th,k,tlag1,p1,tlag2,p2,mlag1,q1,mlag2,q2,Ir,L)
 SUBROUTINE tarmaLSW(x,nx,th,tlag1,p1,tlag2,p2,mlag1,q1,mlag2,q2,Ir,wt,indg,ng,L)
 !! Robust Least Squares objective function for a TARMA model
     USE ISO_Fortran_env
+    use ISO_C_BINDING
     IMPLICIT NONE
     INTEGER,intent(in):: nx,p1,p2,q1,q2,Ir(nx),tlag1(p1-1),tlag2(p2-1),&
     mlag1(q1),mlag2(q2),ng,indg(ng)
-    REAL(KIND=REAL64),intent(in) :: x(nx),wt(nx),th(p1+p2+q1+q2)
-    REAL(KIND=REAL64),intent(out):: L
+    REAL(C_DOUBLE),intent(in) :: x(nx),wt(nx),th(p1+p2+q1+q2)
+    REAL(C_DOUBLE),intent(out):: L
     integer :: i,j
-    REAL(KIND=REAL64) :: eps(nx),h,phi1(p1),phi2(p2),th1(q1),th2(q2)
+    REAL(C_DOUBLE) :: eps(nx),h,phi1(p1),phi2(p2),th1(q1),th2(q2)
     eps  = 0
     L    = 0
     h    = 1
@@ -82,13 +84,14 @@ SUBROUTINE tarmaLSW(x,nx,th,tlag1,p1,tlag2,p2,mlag1,q1,mlag2,q2,Ir,wt,indg,ng,L)
 SUBROUTINE tarmaDLS(x,nx,th,k,tlag1,p1,tlag2,p2,mlag1,q1,mlag2,q2,Ir,DL)
 !! Gradient of the Least Squares objective function for a TARMA model
     USE ISO_Fortran_env
+    use ISO_C_BINDING
     IMPLICIT NONE
     INTEGER,intent(in):: nx,k,p1,p2,q1,q2,Ir(nx),tlag1(p1-1),tlag2(p2-1),&
         mlag1(q1),mlag2(q2)
-    REAL(KIND=REAL64),intent(in) :: x(nx),th(p1+p2+q1+q2)
-    REAL(KIND=REAL64),intent(out):: DL(p1+p2+q1+q2)
+    REAL(C_DOUBLE),intent(in) :: x(nx),th(p1+p2+q1+q2)
+    REAL(C_DOUBLE),intent(out):: DL(p1+p2+q1+q2)
     integer :: i
-    REAL(KIND=REAL64) :: h,eps(nx),phi1(p1),phi2(p2),th1(q1),th2(q2),&
+    REAL(C_DOUBLE) :: h,eps(nx),phi1(p1),phi2(p2),th1(q1),th2(q2),&
     deps(nx,p1+p2+q1+q2)
     h     = 1.0
     deps  = 0.0
@@ -120,13 +123,14 @@ END SUBROUTINE tarmaDLS
 SUBROUTINE tarmaDLSW(x,nx,th,tlag1,p1,tlag2,p2,mlag1,q1,mlag2,q2,Ir,wt,indg,ng,DL)
 !! Gradient of the robust Least Squares objective function for a TARMA model
     USE ISO_Fortran_env
+    use ISO_C_BINDING
     IMPLICIT NONE
     INTEGER,intent(in):: nx,p1,p2,q1,q2,Ir(nx),tlag1(p1-1),tlag2(p2-1),&
         mlag1(q1),mlag2(q2),ng,indg(ng)
-    REAL(KIND=REAL64),intent(in) :: x(nx),wt(nx),th(p1+p2+q1+q2)
-    REAL(KIND=REAL64),intent(out):: DL(p1+p2+q1+q2)
+    REAL(C_DOUBLE),intent(in) :: x(nx),wt(nx),th(p1+p2+q1+q2)
+    REAL(C_DOUBLE),intent(out):: DL(p1+p2+q1+q2)
     integer :: i,j
-    REAL(KIND=REAL64) :: h,eps(nx),phi1(p1),phi2(p2),th1(q1),th2(q2),&
+    REAL(C_DOUBLE) :: h,eps(nx),phi1(p1),phi2(p2),th1(q1),th2(q2),&
     deps(nx,p1+p2+q1+q2),epsm(nx,p1+p2+q1+q2)
     h     = 1.0
     deps  = 0.0
@@ -161,13 +165,14 @@ END SUBROUTINE tarmaDLSW
 !SUBROUTINE tarmaDLSW(x,nx,th,k,tlag1,p1,tlag2,p2,mlag1,q1,mlag2,q2,Ir,alpha,DL)
 !!! Gradient of the robust Least Squares objective function for a TARMA model
 !    USE ISO_Fortran_env
+!    use ISO_C_BINDING
 !    IMPLICIT NONE
 !    INTEGER,intent(in):: nx,k,p1,p2,q1,q2,Ir(nx),tlag1(p1-1),tlag2(p2-1),&
 !        mlag1(q1),mlag2(q2)
-!    REAL(KIND=REAL64),intent(in) :: x(nx),th(p1+p2+q1+q2),alpha
-!    REAL(KIND=REAL64),intent(out):: DL(p1+p2+q1+q2)
+!    REAL(C_DOUBLE),intent(in) :: x(nx),th(p1+p2+q1+q2),alpha
+!    REAL(C_DOUBLE),intent(out):: DL(p1+p2+q1+q2)
 !    integer :: i
-!    REAL(KIND=REAL64) :: h,eps(nx),phi1(p1),phi2(p2),th1(q1),th2(q2),&
+!    REAL(C_DOUBLE) :: h,eps(nx),phi1(p1),phi2(p2),th1(q1),th2(q2),&
 !    deps(nx,p1+p2+q1+q2),epsm(nx,p1+p2+q1+q2)
 !    h     = 1.0
 !    deps  = 0.0

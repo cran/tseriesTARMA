@@ -13,7 +13,7 @@
 #' 
 #' @method print TARMAtest
 #' @export
-#' @author Simone Giannerini, \email{simone.giannerini@@unibo.it}
+#' @author Simone Giannerini, \email{simone.giannerini@@uniud.it}
 #' @author Greta Goracci, \email{greta.goracci@@unibz.it}
 #' 
 #' @seealso \code{\link{print.htest}}
@@ -30,7 +30,8 @@ print.TARMAtest <- function(x,...){
     cval <- CritValues(x$pa,x$dfree)
     cat('delay: d = ',as.integer(x$d),', degrees of freedom: ',as.integer(x$dfree),
         ', lower threshold quantile: ',x$pa,'\n',sep='')
-    cat('---------------      90%    95%    99%  \n')
+    cat('---------------\n')
+    cat('Level:               90%    95%    99%  \n')
   }
   cat('Critical Values: ',format(cval,width=6),'\n')
   cat("\n")

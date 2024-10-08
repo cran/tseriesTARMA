@@ -15,8 +15,8 @@
 #' @return
 #' A list with components `pred.matrix`, `pred`, and `pred.interval`. The latter two are `ts` objects that contain the prediction and the quantiles of the prediction density, respectively.
 #' If `pred.matrix = TRUE` then the prediction density from which the quantiles are computed is also returned. 
-#' @author Simone Giannerini, \email{simone.giannerini@@unibo.it}
-#' @author Greta Goracci, \email{greta.goracci@@unibo.it}
+#' @author Simone Giannerini, \email{simone.giannerini@@uniud.it}
+#' @author Greta Goracci, \email{greta.goracci@@unibz.it}
 #' @references
 #' * \insertRef{Gia21}{tseriesTARMA}
 #'

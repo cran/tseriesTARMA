@@ -11,8 +11,8 @@
 #' @param ma.ord   Order of the MA part (also called \code{q} below).
 #' @param sma.ord  Order of the seasonal MA part (also called \code{Q} below).
 #' @param period   Period of the seasonal MA part (also called \code{s} below).
-#' @param estimate.thd Logical. If \code{TRUE} estimates the threshold over the threshold range specified by \code{pa} and \code{pb}.
-#' @param threshold Threshold parameter. Used only if \code{estimate.thd = FALSE}.
+#' @param threshold Threshold parameter. If \code{NULL} estimates the threshold over the threshold range specified by 
+#' \code{pa} and \code{pb}.
 #' @param d  Delay parameter. Defaults to \code{1}.
 #' @param pa  Real number in \code{[0,1]}. Sets the lower limit for the threshold search to the \code{100*pa}-th sample percentile.
 #' The default is \code{0.25}
@@ -68,7 +68,7 @@
 #'  \item \code{method} - Estimation method.
 #'  \item \code{call}   - The matched call.
 #'}
-#' @author Simone Giannerini, \email{simone.giannerini@@unibo.it}
+#' @author Simone Giannerini, \email{simone.giannerini@@uniud.it}
 #' @author Greta Goracci, \email{greta.goracci@@unibz.it}
 #' @references
 #' * \insertRef{Gia21}{tseriesTARMA}
@@ -112,7 +112,7 @@
 ## '***************************************************************************
 
 TARMA.fit2 <- function(x, ar.lags = NULL, tar1.lags = c(1), tar2.lags = c(1), ma.ord = 1, sma.ord = 0L,
-period = NA, estimate.thd = TRUE, threshold, d = 1, pa = 0.25, pb = 0.75,
+period = NA, threshold = NULL, d = 1, pa = 0.25, pb = 0.75,
 thd.var = NULL, include.int = TRUE, x.reg = NULL, optim.control = list(), ...){
 
     if(length(intersect(ar.lags,tar1.lags))>0) stop('AR lags and TAR lags must not have common elements')
@@ -189,7 +189,7 @@ thd.var = NULL, include.int = TRUE, x.reg = NULL, optim.control = list(), ...){
     n.tarp <- length(tarnames)  # number of TAR parameters
     xnames <- c(arnames,tarnames)
 
-    if(estimate.thd){
+    if(is.null(threshold)){
         a         <- ceiling((neff-1)*pa)
         b         <- floor((neff-1)*pb)
         thd.v     <- sort(xth)

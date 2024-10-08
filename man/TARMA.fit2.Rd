@@ -12,8 +12,7 @@ TARMA.fit2(
   ma.ord = 1,
   sma.ord = 0L,
   period = NA,
-  estimate.thd = TRUE,
-  threshold,
+  threshold = NULL,
   d = 1,
   pa = 0.25,
   pb = 0.75,
@@ -39,9 +38,8 @@ TARMA.fit2(
 
 \item{period}{Period of the seasonal MA part (also called \code{s} below).}
 
-\item{estimate.thd}{Logical. If \code{TRUE} estimates the threshold over the threshold range specified by \code{pa} and \code{pb}.}
-
-\item{threshold}{Threshold parameter. Used only if \code{estimate.thd = FALSE}.}
+\item{threshold}{Threshold parameter. If \code{NULL} estimates the threshold over the threshold range specified by
+\code{pa} and \code{pb}.}
 
 \item{d}{Delay parameter. Defaults to \code{1}.}
 
@@ -154,7 +152,7 @@ models. \code{\link{print.TARMA}} for print methods for \code{TARMA} fits.
 \code{\link{predict.TARMA}} for prediction and forecasting.
 }
 \author{
-Simone Giannerini, \email{simone.giannerini@unibo.it}
+Simone Giannerini, \email{simone.giannerini@uniud.it}
 
 Greta Goracci, \email{greta.goracci@unibz.it}
 }

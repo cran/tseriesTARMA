@@ -5,6 +5,7 @@
 ! *****************************************************************************
 SUBROUTINE ARvsTARh(x,n,d,p,a,b,neff,testv,xth,coef,s2,eps)
     USE TARMA_MOD
+    use ISO_C_BINDING
     USE m_mrgrnk
     IMPLICIT NONE
     ! *****************************************************************************
@@ -14,13 +15,13 @@ SUBROUTINE ARvsTARh(x,n,d,p,a,b,neff,testv,xth,coef,s2,eps)
     INTEGER,intent(IN):: p,d,a,b,n,neff
     integer :: i,lags(p+1),ind0,k,nr
     INTEGER::indt(neff)
-    REAL(KIND=REAL64),intent(IN):: x(n)
-    REAL(KIND=REAL64),intent(OUT):: testv(b-a+1,2),xth(neff),coef(p+1),s2,eps(neff)
-    REAL(KIND=REAL64):: Xlag(neff,p+1),&
+    REAL(C_DOUBLE),intent(IN):: x(n)
+    REAL(C_DOUBLE),intent(OUT):: testv(b-a+1,2),xth(neff),coef(p+1),s2,eps(neff)
+    REAL(C_DOUBLE):: Xlag(neff,p+1),&
     dphik(neff,(p+1)),dpsik(neff,(p+1)),Ir(neff),scoreht(p+1,neff),M11is(p+1,neff),&
     epsdpsik(neff,(p+1))
-    REAL(KIND=REAL64),ALLOCATABLE:: xreg(:,:),coef2(:),epst(:,:)
-    REAL(KIND=REAL64):: tol,r,M11((p+1),(p+1)),M11i((p+1),(p+1)),&
+    REAL(C_DOUBLE),ALLOCATABLE:: xreg(:,:),coef2(:),epst(:,:)
+    REAL(C_DOUBLE):: tol,r,M11((p+1),(p+1)),M11i((p+1),(p+1)),&
     M21((p+1),(p+1)), Mi((p+1),(p+1)), score(p+1),Vi((p+1),(p+1)),&
     scoreh(p+1),cde(p+1,1),cdem(p+1,p+1),scd(p+1)!,M12((p+1),(p+1)), M22((p+1),(p+1))
 
@@ -87,6 +88,7 @@ SUBROUTINE ARvsTARh(x,n,d,p,a,b,neff,testv,xth,coef,s2,eps)
 ! *****************************************************************************
 SUBROUTINE ARvsTAR_HB(x,n,d,p,a,b,neff,nrep,test,testb)
     USE TARMA_MOD
+    use ISO_C_BINDING
     USE m_mrgrnk
     IMPLICIT NONE
     ! *****************************************************************************
@@ -96,13 +98,13 @@ SUBROUTINE ARvsTAR_HB(x,n,d,p,a,b,neff,nrep,test,testb)
     INTEGER,intent(IN):: n,d,p,a,b,neff,nrep
     integer :: i,lags(p+1),ind0,k,nr
     INTEGER::indt(neff)
-    REAL(KIND=REAL64),intent(IN):: x(n)
-    REAL(KIND=REAL64),intent(OUT):: test(2),testb(nrep,2)
-    REAL(KIND=REAL64):: Xlag(neff,p+1),testv(b-a+1,2),testvb(b-a+1,nrep,2),&
+    REAL(C_DOUBLE),intent(IN):: x(n)
+    REAL(C_DOUBLE),intent(OUT):: test(2),testb(nrep,2)
+    REAL(C_DOUBLE):: Xlag(neff,p+1),testv(b-a+1,2),testvb(b-a+1,nrep,2),&
     dphik(neff,(p+1)),dpsik(neff,(p+1)),Ir(neff),scoreht(p+1,neff),M11is(p+1,neff),&
     epsdpsik(neff,(p+1)),xth(neff),coef(p+1),s2,eps(neff),scoret(p+1,neff)
-    REAL(KIND=REAL64),ALLOCATABLE:: xreg(:,:),coef2(:),epst(:,:)
-    REAL(KIND=REAL64):: tol,r,M11((p+1),(p+1)),M11i((p+1),(p+1)),&
+    REAL(C_DOUBLE),ALLOCATABLE:: xreg(:,:),coef2(:),epst(:,:)
+    REAL(C_DOUBLE):: tol,r,M11((p+1),(p+1)),M11i((p+1),(p+1)),&
     M21((p+1),(p+1)), Mi((p+1),(p+1)), score(p+1),Vi((p+1),(p+1)),&
     scoreh(p+1),cde(p+1,1),cdem(p+1,p+1),scd(p+1),&!,M12((p+1),(p+1)), M22((p+1),(p+1))
     eta(neff,nrep),dum(neff,nrep),scorehb(p+1,nrep),scoreb(p+1,nrep)

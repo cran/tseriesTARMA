@@ -9,10 +9,11 @@
 #'    - Tests for ARMA vs TARMA with both i.i.d. errors and GARCH errors.
 #' * Unit-root testing against a stationary TARMA model
 #'
-#' @author Simone Giannerini, \email{simone.giannerini@@unibo.it}
+#' @author Simone Giannerini, \email{simone.giannerini@@uniud.it}
 #' @author Greta Goracci, \email{greta.goracci@@unibz.it}
 #' @references
 #' * \insertRef{Gia23}{tseriesTARMA}
+#' * \insertRef{Ang23}{tseriesTARMA}
 #' * \insertRef{Gia22}{tseriesTARMA}
 #' * \insertRef{Gia21}{tseriesTARMA}
 #' * \insertRef{Gor21}{tseriesTARMA}

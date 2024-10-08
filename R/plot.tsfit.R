@@ -14,7 +14,7 @@
 #' @param \dots    Additional graphical parameters.
 #' @return
 #'   No return value, called for side effects
-#' @author Simone Giannerini, \email{simone.giannerini@@unibo.it}
+#' @author Simone Giannerini, \email{simone.giannerini@@uniud.it}
 #' @author Greta Goracci, \email{greta.goracci@@unibz.it}
 #' @importFrom stats ts.plot predict
 #' @rawNamespace export(plot.tsfit)
@@ -25,8 +25,7 @@
 #' ## a TARMA(1,1,1,1) model
 #' set.seed(13)
 #' x    <- TARMA.sim(n=200, phi1=c(0.5,-0.5), phi2=c(0.0,0.5), theta1=-0.5, theta2=0.7, d=1, thd=0.2)
-#' fit1 <- TARMA.fit(x,tar1.lags = 1, tar2.lags = 1, tma1.lags = 1, tma2.lags = 1, d=1,
-#'          estimate.thd = FALSE, threshold=0.2)
+#' fit1 <- TARMA.fit(x,tar1.lags = 1, tar2.lags = 1, tma1.lags = 1, tma2.lags = 1, d=1, threshold=0.2)
 #' xp1  <- predict(fit1,x,n.ahead=5)
 #'
 #' # plots both the fitted and the forecast

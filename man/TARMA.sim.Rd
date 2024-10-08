@@ -94,7 +94,7 @@ x <- TARMA.sim(n=100,phi1=c(0.5,-0.5,0),phi2=c(0,0.5,0.3),theta1=-0.5,theta2=0.5
 }
 }
 \author{
-Simone Giannerini, \email{simone.giannerini@unibo.it}
+Simone Giannerini, \email{simone.giannerini@uniud.it}
 
 Greta Goracci, \email{greta.goracci@unibz.it}
 }

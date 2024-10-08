@@ -38,7 +38,7 @@ An object of class \code{TARMAtest} with components:
 }
 }
 \description{
-Implements a heteroskedasticity robust supremum Lagrange Multiplier test for a AR specification versus
+Heteroskedasticity robust supremum Lagrange Multiplier test for a AR specification versus
 a TAR specification. Includes the classic (non robust) AR versus TAR test.
 }
 \details{
@@ -67,13 +67,12 @@ TAR.test(x2, ar.ord=1, d=1)
 }
 \seealso{
 \code{\link{TAR.test.B}} for the bootstrap version of the test.
-\code{\link{TARMA.test}} for the ARMA vs TARMA asymptotic version of the test, which includes also the AR vs TAR test, with different defaults.
-\code{\link{TARMAGARCH.test}} for the robust version of the ARMA vs TARMA test with respect to
-GARCH innovations.
+\code{\link{TARMA.test}} for the (robust) ARMA vs TARMA asymptotic version of the test, which includes also the AR vs TAR test, with different defaults.
+\code{\link{TARMAGARCH.test}} for the robust version of the ARMA vs TARMA test that assumes GARCH innovations.
 \code{\link{TARMA.sim}} to simulate from a TARMA process.
 }
 \author{
-Simone Giannerini, \email{simone.giannerini@unibo.it}
+Simone Giannerini, \email{simone.giannerini@uniud.it}
 
 Greta Goracci, \email{greta.goracci@unibz.it}
 }

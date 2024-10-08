@@ -14,7 +14,6 @@ TARMAGARCH.test(
   garch.ord = 1,
   d = 1,
   thd.range,
-  method = "CSS",
   ...
 )
 }
@@ -27,21 +26,19 @@ The default is \code{0.25}}
 \item{pb}{Real number in \code{[0,1]}. Sets the upper limit for the threshold search to the \code{100*pb}-th sample percentile.
 The default is \code{0.75}}
 
-\item{ar.ord}{Order of the AR part.}
+\item{ar.ord}{Order of the AR part.  It must be a positive integer}
 
-\item{ma.ord}{Order of the MA part.}
+\item{ma.ord}{Order of the MA part.  It must be a positive integer}
 
-\item{arch.ord}{Order of the ARCH part.}
+\item{arch.ord}{Order of the ARCH part. It must be a positive integer}
 
-\item{garch.ord}{Order of the GARCH part.}
+\item{garch.ord}{Order of the GARCH part.  It must be a non negative integer.}
 
 \item{d}{Delay parameter. Defaults to \code{1}.}
 
 \item{thd.range}{Vector of optional user defined threshold range. If missing then \code{pa} and \code{pb} are used.}
 
-\item{method}{Fitting method to be passed to \code{arima}.}
-
-\item{\dots}{Additional arguments to be passed to \code{arima}.}
+\item{\dots}{Additional arguments to be passed to \code{ugarchfit}.}
 }
 \value{
 A list of class \code{htest} with components:
@@ -50,8 +47,7 @@ A list of class \code{htest} with components:
 \item{\code{parameter}}{A named vector: \code{threshold} is the value that maximises the Lagrange Multiplier values.}
 \item{\code{test.v}}{Vector of values of the LM statistic for each threshold given in \code{thd.range}.}
 \item{\code{thd.range}}{Range of values of the threshold.}
-\item{\code{fit.ARMA}}{The null model: ARMA fit over \code{x}.}
-\item{\code{fit.GARCH}}{The null model: GARCH fit over the residuals of the ARMA fit.}
+\item{\code{fit}}{The null model: ARMA-GARCH fit using \code{rugarch}.}
 \item{\code{sigma2}}{Estimated innovation variance from the ARMA fit.}
 \item{\code{data.name}}{A character string giving the name of the data.}
 \item{\code{prop}}{Proportion of values of the series that fall in the lower regime.}
@@ -64,14 +60,16 @@ A list of class \code{htest} with components:
 }
 \description{
 Implements a supremum Lagrange Multiplier test for a ARMA-GARCH specification versus
-a TARMA-GARCH specification. Both the AR and MA parameters are tested
+a TARMA-GARCH specification. Both the AR and MA parameters are tested. Also includes the ARCH case.
 }
 \details{
 Implements an asymptotic supremum Lagrange Multiplier test to test an ARMA-GARCH specification versus
 a TARMA-GARCH specification. In other words, the test is robust with respect to heteroskedasticity.
 Both the AR parameters and the MA parameters are tested. This is an asymptotic test and the value of
-the test statistic has to be compared with the critical values tabulated in \insertCite{Ang22}{tseriesTARMA}
-or \insertCite{And03}{tseriesTARMA}.
+the test statistic has to be compared with the critical values reported in the output and taken from
+\insertCite{And03}{tseriesTARMA}. It includes the ARCH case if \code{garch.ord=0}.
+The null ARMA-GARCH model is estimated in one step with the function \code{ugarchfit}
+from the package \code{rugarch}. The estimated AR and MA polynomials are checked for stationarity and invertibility.
 }
 \examples{
 ## Function to simulate from a ARMA-GARCH process
@@ -80,7 +78,7 @@ arma11.garch11 <- function(n, ph, th, a, b, a0=1, rand.gen = rnorm, innov = rand
 n.start = 500, start.innov = rand.gen(n.start, ...),...){
 
   #  Simulates a ARMA(1,1)-GARCH(1,1) process
-  #  with parameeters ph, th, a, b, a0.
+  #  with parameters ph, th, a, b, a0.
   #         x[t] <- ph*x[t-1] + th*eps[t-1] + eps[t]
   #       eps[t] <- e[t]*sqrt(v[t])
   #         v[t] <- a0 + a*eps[t-1]^2 + b*v[t-1];
@@ -128,7 +126,7 @@ TARMAGARCH.test(x2, ar.ord=1, ma.ord=1, d=1)
 }
 \references{
 \itemize{
-\item \insertRef{Ang22}{tseriesTARMA}
+\item \insertRef{Ang23}{tseriesTARMA}
 \item \insertRef{Gor21}{tseriesTARMA}
 \item \insertRef{And03}{tseriesTARMA}
 }
@@ -137,7 +135,7 @@ TARMAGARCH.test(x2, ar.ord=1, ma.ord=1, d=1)
 \code{\link{TARMA.test}} and \code{\link{TAR.test.B}} for the asymptotic and bootstrap test without the GARCH component. \code{\link{TARMA.sim}} to simulate from a TARMA process. \code{\link{TARMA.fit}} and \code{\link{TARMA.fit2}} for TARMA modelling.
 }
 \author{
-Simone Giannerini, \email{simone.giannerini@unibo.it}
+Simone Giannerini, \email{simone.giannerini@uniud.it}
 
 Greta Goracci, \email{greta.goracci@unibz.it}
 }

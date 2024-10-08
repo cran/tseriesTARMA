@@ -2,7 +2,7 @@
 % Please edit documentation in R/TARMA.test.R
 \name{TARMA.test}
 \alias{TARMA.test}
-\title{ARMA versus TARMA supLM test for nonlinearity}
+\title{ARMA versus TARMA (and AR versus TAR) supLM tests for nonlinearity}
 \usage{
 TARMA.test(
   x,
@@ -18,7 +18,7 @@ TARMA.test(
 )
 }
 \arguments{
-\item{x}{A univariate time series.}
+\item{x}{A univariate time series, either a \code{ts} or \code{zoo} object.}
 
 \item{pa}{Real number in \code{[0,1]}. Sets the lower limit for the threshold search to the \code{100*pa}-th sample percentile.
 The default is \code{0.25}}
@@ -43,9 +43,9 @@ The default is \code{0.75}}
 \value{
 An object of class \code{TARMAtest} with components:
 \describe{
-\item{\code{statistic}}{The value of the supLM statistic.}
-\item{\code{parameter}}{A named vector: \code{threshold} is the value that maximises the Lagrange Multiplier values.}
-\item{\code{test.v}}{Vector of values of the LM statistic for each threshold given in \code{thd.range}.}
+\item{\code{statistic}}{The value of the \code{supLM} statistic and its robust version \code{supLMh}.}
+\item{\code{parameter}}{A named vector: \code{threshold} is the value that maximizes the Lagrange Multiplier values.}
+\item{\code{test.v}}{Vector of values of the two LM statistics for each threshold given in \code{thd.range}.}
 \item{\code{thd.range}}{Range of values of the threshold.}
 \item{\code{fit.ARMA}}{The null model: ARMA fit over \code{x}.}
 \item{\code{sigma2}}{Estimated innovation variance from the ARMA fit.}
@@ -59,13 +59,14 @@ An object of class \code{TARMAtest} with components:
 }
 }
 \description{
-Implements a supremum Lagrange Multiplier test for a ARMA specification versus
+Heteroskedasticity robust supremum Lagrange Multiplier tests for a ARMA specification versus
 a TARMA specification. Includes the AR versus TAR test.
 }
 \details{
 Implements an asymptotic supremum Lagrange Multiplier test to test an ARMA specification versus a TARMA specification.
+Both the non-robust \code{supLM} and the robust \code{supLMh} statistics are returned.
 If \code{ma.fixed=TRUE} (the default), the AR parameters are tested whereas the MA parameters are fixed. If \code{ma.fixed=FALSE} both the AR and the MA parameters are tested.
-This is an asymptotic test and the value of the test statistic has to be compared with the critical values tabulated in \insertCite{Gor21}{tseriesTARMA} and \insertCite{And03}{tseriesTARMA}.
+This is an asymptotic test and the value of the test statistic has to be compared with the critical values tabulated in \insertCite{Gor21}{tseriesTARMA} and \insertCite{And03}{tseriesTARMA}. These are automatically computed and printed by \code{\link{print.TARMAtest}}.
 If \code{ma.ord=0} then the AR versus TAR test is used. Note that when \code{method='CSS'}, this is equivalent to \code{TAR.test}, which uses least squares.
 }
 \examples{
@@ -102,11 +103,10 @@ TARMA.test(x5, ar.ord=1, ma.ord=0, d=1)
 }
 }
 \seealso{
-\code{\link{TAR.test.B}} for the bootstrap version of the test. \code{\link{TARMAGARCH.test}}
-for the robust version of the test with respect to GARCH innovations. \code{\link{TARMA.sim}} to simulate from a TARMA process.
+\code{\link{TAR.test}} for the AR vs TAR asymptotic version of the test with different defaults. \code{\link{TAR.test.B}} for the bootstrap version of the AR vs TAR test. \code{\link{TARMAGARCH.test}} for the robust version of the test that assumes GARCH innovations. \code{\link{TARMA.sim}} to simulate from a TARMA process.
 }
 \author{
-Simone Giannerini, \email{simone.giannerini@unibo.it}
+Simone Giannerini, \email{simone.giannerini@uniud.it}
 
 Greta Goracci, \email{greta.goracci@unibz.it}
 }

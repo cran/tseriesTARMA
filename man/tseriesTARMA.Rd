@@ -2,8 +2,8 @@
 % Please edit documentation in R/tseriesTARMA.R
 \docType{package}
 \name{tseriesTARMA}
-\alias{tseriesTARMA}
 \alias{tseriesTARMA-package}
+\alias{tseriesTARMA}
 \title{tseriesTARMA: Analysis of Nonlinear Time Series through Threshold Autoregressive Moving Average Models (TARMA) models}
 \description{
 It provides advanced functions for:
@@ -24,6 +24,7 @@ It provides advanced functions for:
 \references{
 \itemize{
 \item \insertRef{Gia23}{tseriesTARMA}
+\item \insertRef{Ang23}{tseriesTARMA}
 \item \insertRef{Gia22}{tseriesTARMA}
 \item \insertRef{Gia21}{tseriesTARMA}
 \item \insertRef{Gor21}{tseriesTARMA}
@@ -33,7 +34,7 @@ It provides advanced functions for:
 }
 }
 \author{
-Simone Giannerini, \email{simone.giannerini@unibo.it}
+Simone Giannerini, \email{simone.giannerini@uniud.it}
 
 Greta Goracci, \email{greta.goracci@unibz.it}
 }

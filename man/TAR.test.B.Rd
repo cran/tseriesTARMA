@@ -93,7 +93,7 @@ TAR.test.B(x2, ar.ord=1, d=1, btype='wb.h')
 robust version of the test with respect to GARCH innovations. \code{\link{TARMA.sim}} to simulate from a TARMA process.
 }
 \author{
-Simone Giannerini, \email{simone.giannerini@unibo.it}
+Simone Giannerini, \email{simone.giannerini@uniud.it}
 
 Greta Goracci, \email{greta.goracci@unibz.it}
 }

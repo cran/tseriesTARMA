@@ -1,18 +1,19 @@
 ! *****************************************************************************
   SUBROUTINE IMAvsTARMA(x,eps,n,trange,nr,s2,ma,testv)
   USE TARMA_MOD
+  use ISO_C_BINDING
   IMPLICIT NONE
   ! *****************************************************************************
     ! IMAvsTARMA supLM STATISTICS
     ! SG 2021
     ! *****************************************************************************
     INTEGER,intent(in):: n,nr
-REAL(KIND=REAL64),intent(in) :: x(n),eps(n),trange(nr),s2,ma(1)
-  REAL(KIND=REAL64),intent(out):: testv(nr)
+REAL(C_DOUBLE),intent(in) :: x(n),eps(n),trange(nr),s2,ma(1)
+  REAL(C_DOUBLE),intent(out):: testv(nr)
   integer :: i,neff
-REAL(KIND=REAL64) :: r,M11(1,1), M21(2,1),M22(2,2),&
+REAL(C_DOUBLE) :: r,M11(1,1), M21(2,1),M22(2,2),&
   score(2),I22(nr,4),I21(nr,2),M1(nr,4),M(nr,4),Mi(nr,4),sc(nr,2),detM(nr)
-  REAL(KIND=REAL64), ALLOCATABLE :: epst(:),Xlag(:,:),xth(:),dphik(:,:),dpsik(:,:)
+  REAL(C_DOUBLE), ALLOCATABLE :: epst(:),Xlag(:,:),xth(:),dphik(:,:),dpsik(:,:)
   INTEGER, ALLOCATABLE :: Ir(:)
   neff = n-1
 ALLOCATE(epst(neff),xth(neff),Ir(neff),Xlag(neff,2),dphik(neff,1),dpsik(neff,2))

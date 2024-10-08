@@ -10,15 +10,16 @@ TARMA.fit(
   tar2.lags = c(1),
   tma1.lags = c(1),
   tma2.lags = c(1),
-  estimate.thd = TRUE,
-  threshold,
+  threshold = NULL,
   d = 1,
   pa = 0.25,
   pb = 0.75,
-  method = c("L-BFGS-B", "solnp", "lbfgsb3c", "robust"),
+  method = c("L-BFGS-B", "solnp", "lbfgsb3c", "robust", "trimmed"),
   alpha = 0,
   qu = c(0.05, 0.95),
+  innov = c("norm", "student"),
   optim.control = list(trace = 0),
+  irls.control = list(maxiter = 100, tol = 1e-04),
   ...
 )
 }
@@ -33,9 +34,8 @@ TARMA.fit(
 
 \item{tma2.lags}{Vector of MA lags for the upper regime. It can be a subset of \code{1 ... q2 = max(tma2.lags)}.}
 
-\item{estimate.thd}{Logical. If \code{TRUE} estimates the threshold over the threshold range specified by \code{pa} and \code{pb}.}
-
-\item{threshold}{Threshold parameter. Used only if \code{estimate.thd = FALSE}.}
+\item{threshold}{Threshold parameter. If \code{NULL} estimates the threshold over the threshold range specified by
+\code{pa} and \code{pb}.}
 
 \item{d}{Delay parameter. Defaults to \code{1}.}
 
@@ -45,16 +45,19 @@ The default is \code{0.25}}
 \item{pb}{Real number in \code{[0,1]}. Sets the upper limit for the threshold search to the \code{100*pb}-th sample percentile.
 The default is \code{0.75}}
 
-\item{method}{Optimization/fitting method, can be one of \cr
-\code{"L-BFGS-B", "solnp", "lbfgsb3c", "robust"}.}
+\item{method}{Optimization/fitting method, can be one of \code{"L-BFGS-B", "solnp", "lbfgsb3c", "robust", "trimmed"}.}
 
-\item{alpha}{Real positive number. Tuning parameter for robust estimation. Only used if \code{method} is \code{"robust"}.}
+\item{alpha}{Real positive number. Tuning parameter for robust estimation. Only used if \code{method} is \code{robust}.}
 
-\item{qu}{Quantiles for initial trimmed estimation. Tuning parameter for robust estimation. Only used if \code{method} is \code{"robust"}.}
+\item{qu}{Quantiles for (initial) trimmed estimation. Tuning parameter for robust estimation. Only used if \code{method} is either \code{robust} or \code{trimmed}.}
 
-\item{optim.control}{List of control parameters for the optimization method.}
+\item{innov}{Innovation density for robust estimation. can be one of \code{"norm", "student"}. Only used if \code{method} is \code{"robust"}.}
 
-\item{\dots}{Additional arguments for the optimization.}
+\item{optim.control}{List of control parameters for the main optimization method.}
+
+\item{irls.control}{List of control parameters for the irls optimization method (see details).}
+
+\item{\dots}{Additional arguments.}
 }
 \value{
 A list of class \code{TARMA} with components:
@@ -67,8 +70,7 @@ A list of class \code{TARMA} with components:
 \item \code{residuals} - Vector of residuals from the fit.
 \item \code{nobs} - Effective sample size used for fitting the model.
 }
-\item \code{se} - Standard errors for the parameters. Note that they are computed conditionally \cr
-upon the threshold so that they are generally smaller than the true ones.
+\item \code{se} - Standard errors for the parameters. Note that they are computed conditionally upon the threshold so that they are generally smaller than the true ones.
 \item \code{thd}    - Estimated threshold.
 \item \code{aic}    - Value of the AIC for the minimised least squares criterion over the threshold range.
 \item \code{bic}    - Value of the BIC for the minimised least squares criterion over the threshold range.
@@ -85,10 +87,12 @@ upon the threshold so that they are generally smaller than the true ones.
 \item \code{mlag1}  - TMA lags for the lower regime
 \item \code{mlag2}  - TMA lags for the upper regime
 \item \code{method} - Estimation method.
+\item \code{innov}  - Innovation density model.
 \item \code{alpha}  - Tuning parameter for robust estimation.
 \item \code{qu}     - Tuning parameter for robust estimation.
 \item \code{call}   - The matched call.
 \item \code{convergence} - Convergence code from the optimization routine.
+\item \code{innovpar} - Parameter vector for the innovation density. Defaults to \code{NULL}.
 }
 }
 \description{
@@ -122,10 +126,12 @@ linear and nonlinear inequality bounds. This allows to impose all the ergodicity
 return an ergodic solution. In practice the solution should be checked since this is a local solver and there is no guarantee
 that the minimum has been reached.}
 \item{\code{lbfgsb3c}}{Calls the function \code{\link[lbfgsb3c]{lbfgsb3c}} in package \code{lbfgsb3c}. Improved version of the L-BFGS-B in \code{\link{optim}}.}
-\item{\code{robust}}{Robust M-estimator of Ferrari and La Vecchia \insertCite{Fer12}{tseriesTARMA}. Based on the L-BFGS-B in \code{\link{optim}} and an additional iterative reweighted least squares step to estimate the robust weights.
-Uses the tuning parameters \code{alpha} and \code{qu}. Robust standard errors are derived from the sandwich estimator of the variance/covariance matrix of the estimates}
+\item{\code{robust}}{Robust M-estimator of Ferrari and La Vecchia \insertCite{Fer12}{tseriesTARMA}. Based on the L-BFGS-B in \code{\link{optim}} and an additional iterative re-weighted least squares step to estimate the robust weights.
+Uses the tuning parameters \code{alpha} and \code{qu}. Robust standard errors are derived from the sandwich estimator of the variance/covariance matrix of the estimates.
+The IRLS step can be controlled through the parameters \code{maxiter} (maximum number of iterations) and \code{tol} (target tolerance). These can be passed using \code{irls.control}.}
+\item{\code{trimmed}}{Experimental: Estimator based on trimming the sample using the tuning parameters \code{qu} (lower and upper quantile).}
 }
-Where possible, the ergodicity bounds are imposed to the optimization routines but there is no guarantee that the solution will be ergodic so that it is
+Where possible, the conditions for ergodicity and invertibility are imposed to the optimization routines but there is no guarantee that the solution will be ergodic and invertible so that it is
 advisable to check the fitted parameters.
 }
 
@@ -148,12 +154,11 @@ set.seed(26)
 n    <- 200
 y    <- TARMA.sim(n=n, phi1=c(0.6,0.6), phi2=c(-1.0,0.4), theta1=-0.7, theta2=0.5, d=1, thd=0.2)
 
-fit1 <- TARMA.fit(y,tar1.lags=1, tar2.lags=1, tma1.lags=1, tma2.lags=1, d=1, 
-       estimate.thd=FALSE, threshold=0.2)
+fit1 <- TARMA.fit(y,tar1.lags=1, tar2.lags=1, tma1.lags=1, tma2.lags=1, d=1, threshold=0.2)
 fit1
 
 ## ---------------------------------------------------------------------------
-## Contaminating the data with one additive outlier
+## Contaminate the data with one additive outlier
 ## ---------------------------------------------------------------------------
 x     <- y           # contaminated series
 x[54] <- x[54] + 10
@@ -162,10 +167,9 @@ x[54] <- x[54] + 10
 ## Compare the non-robust LS fit with the robust fit
 ## ---------------------------------------------------------------------------
 
-fitls  <- TARMA.fit(x,tar1.lags=1, tar2.lags=1, tma1.lags=1, tma2.lags=1, d=1,
-            estimate.thd=FALSE, threshold=0.2)
+fitls  <- TARMA.fit(x,tar1.lags=1, tar2.lags=1, tma1.lags=1, tma2.lags=1, d=1, threshold=0.2)
 fitrob <- TARMA.fit(x,tar1.lags=1, tar2.lags=1, tma1.lags=1, tma2.lags=1, d=1,
-            method='robust',alpha=0.7,qu=c(0.1,0.95),estimate.thd = FALSE, threshold=0.2)
+            method='robust',alpha=0.7,qu=c(0.1,0.95), threshold=0.2)
 
 par.true <- c(0.6,0.6,-1,0.4,-0.7,0.5)
 pnames   <- c("int.1", "ar1.1", "int.2", "ar2.1", "ma1.1", "ma2.1")
@@ -190,7 +194,7 @@ models with common MA part. \code{\link{print.TARMA}} for print methods for \cod
 \code{\link{predict.TARMA}} for prediction and forecasting. \code{\link{plot.tsfit}} for plotting TARMA fits and forecasts.
 }
 \author{
-Simone Giannerini, \email{simone.giannerini@unibo.it}
+Simone Giannerini, \email{simone.giannerini@uniud.it}
 
 Greta Goracci, \email{greta.goracci@unibz.it}
 }

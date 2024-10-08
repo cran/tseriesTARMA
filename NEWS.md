@@ -1,12 +1,61 @@
 
 # tseriesTARMA changelog
 
+## 0.5-1
+
+- Changed maintainer e-mail to simone.giannerini@uniud.it.
+
+- Expanded the description and included the doi of the relevant papers.
+
+- All the real kinds in the Fortran sources have been changed in `C_DOUBLE` from the `ISO_C_BINDING` module, for portability. 
+
+- Now `TARMAGARCH.test` uses the package `rugarch` to estimate in one step the parameters of the ARMA-GARCH null model. Checks for stationarity and invertibility have been added. Also, the routine has been improved to include the ARCH test when `garch.ord = 0`.
+
+- `TARMA.test`, has been improved in many places and the heteroskedastic robust version of the routines have been added and are now returned as output, together with their corresponding parameters. Checks for non-invertibility of the MA part are now consistent with those of `TARMAGARCH.test`.
+
+- All the routines for TAR and TARMA testing are now more consistent, especially in the computation of the threshold range.
+
+- In `TARMA.fit` fixed a bug in the computation of the Hessian matrix `D2eps.R` that was only triggered when the dimensions of `tma1.lags` and `tma2.lags`were different. Also, only half of the Hessian matrix was populated. 
+
+## 0.4-0
+
+- Extensive improvement of `TARMA.fit`, see below.
+
+  * The `robust` method in `TARMA.fit` has been reworked as to include Student's T innovations for the robust `rho` function.
+    The new switch `innov` allows to select the innovation density. Allowed options are `norm` for Normal and `student` for Student's T.     The robust weights are also returned.
+  
+  * The HAC standard errors in `TARMA.fit` are now computed in a unified modular way. A small bug is also fixed (wrong scaling).
+
+  * A new `trimmed` LS estimator for `TARMA.fit` is implemented (experimental).
+
+  * The switch `estimate.thd` in `TARMA.fit` and `TARMA.fit2` has been removed. Now if `threshold` is not `NULL` the 
+    threshold is estimated over the threshold range.
+    
+  * the Iterative Re-weighted Least Squares algorithm has been improved and made more robust. 
+    Moreover, now `irls.control` can be used to control the algorithm.
+    
+  * The documentation has been improved.
+  
+  * Fixed a bug in the creation of the residuals: the first k zeros were not removed (line 859)
+
+- Now `print.TARMA` prints the type of innovation density and its estimated parameters. Also, the output is more informative on the kind of estimation method selected. 
+
+- Removed a leftover string in the doc of `TARMAur.test.B`.
+
+- Updated and improved the references.
+
+- Cosmetic improvement of `print.TARMAtest`.
+
+
+## 0.3-5
+
+- fixed digits for covariates in `print.TARMA`
+
 ## 0.3-4
 
 - Removed a leftover call to the `Fortran` intrinsic `RANDOM_NUMBER` function.
 
 - Fixed the docs to cope with the roxygen2 issue https://github.com/r-lib/roxygen2/issues/1491
-
 
 ## 0.3-3
 
@@ -65,7 +114,7 @@
 
 - Minor cosmetic polishing of the documentation of `TARMA.test` and `TARMAGARCH.test`.
 
-- The routines `tarma.fit` and `tarma.fit2` have been renamed`TARMA.fit` and `TARMA.fit2`, for consistency.
+- The routines `tarma.fit` and `tarma.fit2` have been renamed `TARMA.fit` and `TARMA.fit2`, for consistency.
 
 ## 0.2-5
 
@@ -119,7 +168,7 @@ Also, the default line colours and widths have been changed. The examples are no
 
 ## 0.2-0 
 
-- The routines `ARMAvsTARMA.test`  and `ARMAvsTARMA.B.test` have ben renamed  `TARMA.test`  and `TARMA.B.test` , respectively.
+- The routines `ARMAvsTARMA.test`  and `ARMAvsTARMA.B.test` have been renamed  `TARMA.test`  and `TARMA.B.test` , respectively.
 
 - Added the routine `TARMAGARCH.test` .
 

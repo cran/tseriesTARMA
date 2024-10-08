@@ -30,7 +30,7 @@ The default is \code{0.75}}
 
 \item{method}{Fitting method to be passed to \code{arima}.}
 
-\item{btype}{Bootstrap type, can be one of \code{'iid','wb.h','wb.r','wb.n'}, see Details.}
+\item{btype}{Bootstrap type, can be one of \code{'iid','wb.r','wb.n'}, see Details.}
 
 \item{\dots}{Additional arguments to be passed to \code{arima}.}
 }
@@ -87,7 +87,7 @@ TARMAur.test.B(x2, B=100) # B=100 for speedup
 \code{\link{TARMAur.test}} for the asymptotic version of the test. \code{\link{print.TARMAtest}} for the print method.
 }
 \author{
-Simone Giannerini, \email{simone.giannerini@unibo.it}
+Simone Giannerini, \email{simone.giannerini@uniud.it}
 
 Greta Goracci, \email{greta.goracci@unibz.it}
 }
